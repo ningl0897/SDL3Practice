@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "configurePresets": [
+    {
+      "name": "arm64-debug",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/arm64-debug",
+      "architecture": { "value": "arm64", "strategy": "external" },
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_PREFIX_PATH": "C:/SDL3-3.4.16",
+        "USE_SYSTEM_SDL": "ON"
+      }
+    },
+    {
+      "name": "arm64-release",
+      "inherits": "arm64-debug",
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    }
+  ]
+}
