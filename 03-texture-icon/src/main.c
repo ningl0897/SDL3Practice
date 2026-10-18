@@ -29,7 +29,7 @@ void game_render(struct game *g);
 void game_quit_SDL(struct game *g);
 void game_event_message_SDL(struct game *g);
 double game_get_fps(Uint64 *t);
-bool game_load_texture_SDL(struct *g, const char *file);
+bool game_load_texture_SDL(struct game *g, const char *file);
 
 bool game_init_SDL(struct game *g) {
 	if (!SDL_Init(GAME_SDL_INIT_FLAGS)) {
@@ -49,6 +49,8 @@ bool game_init_SDL(struct game *g) {
 		return false;
 	}
 
+	return true;
+
 	SDL_Surface *icon =IMG_Load("icon.ico");
 	if(icon == NULL ) {
 		fprintf(stderr, "Error load img: %s\n", SDL_GetError());
@@ -61,7 +63,7 @@ bool game_init_SDL(struct game *g) {
 	}
 	SDL_DestroySurface(icon);
 
-	return true;
+	// return true;
 }
 
 void game_quit_SDL(struct game *g) {
@@ -85,10 +87,10 @@ void game_quit_SDL(struct game *g) {
 
 void game_render(struct game *g) {
 	SDL_SetRenderDrawColor(g->renderer, 23, 66, 80, 255);
+	SDL_RenderClear(g->renderer);
 
 	SDL_RenderTexture(g->renderer, g->background, NULL, NULL);
 
-	SDL_RenderClear(g->renderer);
 	SDL_RenderPresent(g->renderer);
 }
 
@@ -139,8 +141,8 @@ double game_get_fps(Uint64 *t){
 	return 1.0/delta_time;
 }
 
-bool game_load_texture_SDL(struct *g, const char *file){
-	if(file != NULL){
+bool game_load_texture_SDL(struct game *g, const char *file){
+	if(file == NULL){
 		fprintf(stderr, "Filename error: %s\n", SDL_GetError());
 		return false;
 	}
@@ -157,9 +159,9 @@ bool game_run(struct game *g){
 	game_load_texture_SDL(g, "scenery.png");
 
 	while(g->running){
-		game_render(g);
 		game_event_message_SDL(g);
-		SDL_Delay(4);
+		game_render(g);
+		SDL_Delay(16);
 
 		printf("\rfps: %.0f",game_get_fps(&fps_tick));
 	}
