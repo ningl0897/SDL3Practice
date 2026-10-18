@@ -1,6 +1,7 @@
 #include "load_texture.h"
+#include "game_internal.h"
 
-bool game_load_texture_SDL(struct ganme *g, const char *file){
+bool game_load_texture_SDL(struct game *g, const char *file){
 	if(file == NULL){
 		fprintf(stderr, "Filename error: %s\n", SDL_GetError());
 		return false;

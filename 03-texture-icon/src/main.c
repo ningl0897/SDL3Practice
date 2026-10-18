@@ -30,8 +30,12 @@ void game_quit_SDL(struct game *g);
 void game_event_message_SDL(struct game *g);
 double game_get_fps(Uint64 *t);
 bool game_load_texture_SDL(struct game *g, const char *file);
+static void game_prefer_x11(void);
+
 
 bool game_init_SDL(struct game *g) {
+	game_prefer_x11();
+
 	if (!SDL_Init(GAME_SDL_INIT_FLAGS)) {
 		fprintf(stderr, "SDL init error: %s\n", SDL_GetError());
 		return false;
@@ -49,8 +53,6 @@ bool game_init_SDL(struct game *g) {
 		return false;
 	}
 
-	return true;
-
 	SDL_Surface *icon =IMG_Load("icon.ico");
 	if(icon == NULL ) {
 		fprintf(stderr, "Error load img: %s\n", SDL_GetError());
@@ -59,11 +61,11 @@ bool game_init_SDL(struct game *g) {
 	if(!SDL_SetWindowIcon(g->window, icon)){
 		fprintf(stderr, "Error set icon: %s\n", SDL_GetError());
 		SDL_DestroySurface(icon);
-		return false;
+		return true;
 	}
 	SDL_DestroySurface(icon);
 
-	// return true;
+	return true;
 }
 
 void game_quit_SDL(struct game *g) {
@@ -92,6 +94,16 @@ void game_render(struct game *g) {
 	SDL_RenderTexture(g->renderer, g->background, NULL, NULL);
 
 	SDL_RenderPresent(g->renderer);
+}
+
+static void game_prefer_x11(void)
+{
+	// 如果支持 x11 则使用，用来显示图标窗口
+	if (SDL_getenv("DISPLAY") != NULL)
+	{
+		SDL_SetHintWithPriority(
+			SDL_HINT_VIDEO_DRIVER, "x11", SDL_HINT_OVERRIDE);
+	}
 }
 
 struct game* game_init(void) {

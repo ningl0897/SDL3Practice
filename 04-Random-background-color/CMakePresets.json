@@ -9,7 +9,7 @@
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_PREFIX_PATH": "C:/SDL3-3.4.16",
-        "USE_SYSTEM_SDL": "ON"
+        "USE_SYSTEM_SDL": "OFF"
       }
     },
     {

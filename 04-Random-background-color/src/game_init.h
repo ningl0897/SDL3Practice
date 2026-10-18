@@ -1,9 +1,9 @@
-#ifndef MY_HEADER_H
-#define MY_HEADER_H
+#ifndef GAME_INIT_H
+#define GAME_INIT_H
+#include "game.h"
 
 struct game* game_init(void);
 void game_quit(struct game *g);
-bool game_run(struct game *g);
 
 #endif
 

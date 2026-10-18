@@ -1,4 +1,6 @@
 #include "game_init.h"
+#include "game_internal.h"
+#include "init_SDL.h"
 
 struct game* game_init(void) {
 	struct game *game=NULL;

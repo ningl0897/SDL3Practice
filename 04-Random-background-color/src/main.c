@@ -1,5 +1,8 @@
 #include "main.h"
 #include "game.h"
+#include "game_init.h"
+#include <SDL3/SDL_main.h>
+#include <stdlib.h>
 
 int main(void) {
 	struct game *game = game_init();

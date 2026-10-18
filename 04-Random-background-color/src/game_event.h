@@ -1,6 +1,6 @@
-#ifndef MY_HEADER_H
-#define MY_HEADER_H
-#incude "game.h"
+#ifndef GAME_EVENT_H
+#define GAME_EVENT_H
+#include "game.h"
 
 void game_event_message_SDL(struct game *g);
 

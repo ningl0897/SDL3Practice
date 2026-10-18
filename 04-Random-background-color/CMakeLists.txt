@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(demo C)
 
 # ON=用系统装的 SDL3，OFF=用源码编译
-option(USE_SYSTEM_SDL "Use system SDL3" ON)
+option(USE_SYSTEM_SDL "Use system SDL3" OFF)
 
 if(WIN32)
     set(CMAKE_PREFIX_PATH "C:/SDL3-3.4.16")
@@ -15,11 +15,12 @@ else()
   set(SDL_TESTS    OFF CACHE BOOL "" FORCE)
   set(SDL_EXAMPLES OFF CACHE BOOL "" FORCE)
   set(SDL_INSTALL  OFF CACHE BOOL "" FORCE)
-  add_subdirectory(../SDL SDL)
+  add_subdirectory(../SDL3 SDL)
   add_subdirectory(../SDL3_image SDL3_image)
 endif()
 
-add_executable(demo WIN32 src/*.c)
+file(GLOB DEMO_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
+add_executable(demo WIN32 ${DEMO_SOURCES})
 target_link_libraries(demo PRIVATE SDL3::SDL3 SDL3_image::SDL3_image)
 
 if(WIN32)

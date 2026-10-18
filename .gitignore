@@ -1,0 +1,12 @@
+build/
+arm64-*/
+.vs/
+.vscode/
+
+*.bak
+*.kra
+*.env
+
+# 本地 SDL 源码依赖
+/SDL3/
+/SDL3_image/

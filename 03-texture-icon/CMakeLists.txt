@@ -19,7 +19,8 @@ else()
   add_subdirectory(../SDL3_image SDL3_image)
 endif()
 
-add_executable(demo WIN32 src/main.c)
+file(GLOB DEMO_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
+add_executable(demo WIN32 ${DEMO_SOURCES})
 target_link_libraries(demo PRIVATE SDL3::SDL3 SDL3_image::SDL3_image)
 
 if(WIN32)
