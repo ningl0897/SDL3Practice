@@ -17,8 +17,8 @@
 #define GAME_SDL_WIN_DEFAULT_FLAGS (SDL_WINDOW_TRANSPARENT | SDL_WINDOW_RESIZABLE)
 
 #define TEXT_SIZE 30
-#define TEXT_COLOR (SDL_Color){255,255,255,255,}
-#define TEXT_STR "Kelly is the cutest!"
+#define TEXT_COLOR (SDL_Color){255,255,255,255}
+#define TEXT_STR "Klee is the cutest!"
 
 struct game {
 	SDL_Window *window;
@@ -28,7 +28,7 @@ struct game {
 	Uint8 r;
 	Uint8 g;
 	Uint8 b;
-	SDL_Fonts *;
+	TTF_Font *game_font;
 	SDL_Texture *game_font_texture;
 	SDL_FRect game_frect;
 };

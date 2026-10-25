@@ -1,31 +1,45 @@
 #include "game_init.h"
-#include "game_internal.h"
-#include "init_SDL.h"
+#include "load_texture.h"
 
- game* game_init(void) {
-	struct game *game=NULL;
+struct game *game_init(void)
+{
+	struct game *game = NULL;
 	game = calloc(1, sizeof(struct game));
 
-	if(game == NULL){
+	if (game == NULL)
+	{
 		fprintf(stderr, "error calloc game in game_init()\n");
 		return NULL;
 	}
-	if(!game_init_SDL(game)){
+	if (!game_init_SDL(game))
+	{
+		game_quit(game);
+		return NULL;
+	}
+
+	if(!load_text(game))
+	{
+		fprintf(stderr, "error load_text in game_init()\n");
 		game_quit(game);
 		return NULL;
 	}
 
 	game->running = true;
-	game->text=NULL;
 
 	return game;
 }
 
-void game_quit(struct game *g){
-	if(g){
+void game_quit(struct game *g)
+{
+	if (g)
+	{
+		text_quit(g);
 		game_quit_SDL(g);
+		
 		free(g);
-	}else{
+	}
+	else
+	{
 		fprintf(stderr, "The parameter is NULL\n");
 	}
 }
@@ -50,7 +64,8 @@ bool game_init_SDL(struct game *g)
 		return false;
 	}
 
-	if(!TTF_Init()){
+	if (!TTF_Init())
+	{
 		fprintf(stderr, "Error ttf init: %s\n", SDL_GetError());
 		return false;
 	}
@@ -68,6 +83,7 @@ bool game_init_SDL(struct game *g)
 		fprintf(stderr, "SDL create renderer error: %s\n", SDL_GetError());
 		return false;
 	}
+	
 
 	SDL_Surface *icon = IMG_Load("assets/icon.ico");
 	if (icon == NULL)
@@ -86,18 +102,6 @@ bool game_init_SDL(struct game *g)
 
 void game_quit_SDL(struct game *g)
 {
-	if (g->game_font_texture != NULL)
-	{
-		SDL_DestroyTexture(g->game_font_texture);
-		g->game_font_texture = NULL;
-	}
-
-	if (g->game_font != NULL)
-	{
-		TTF_ClodeFont(g->game_font);
-		g->game_font = NULL;
-	}
-
 	if (g->background != NULL)
 	{
 		SDL_DestroyTexture(g->background);
@@ -119,4 +123,3 @@ void game_quit_SDL(struct game *g)
 	TTF_Quit();
 	SDL_Quit();
 }
-

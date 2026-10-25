@@ -13,7 +13,9 @@ static void game_render(struct game *g)
 	SDL_RenderClear(g->renderer);
 
 	SDL_RenderTexture(g->renderer, g->background, NULL, NULL);
-	SDL_RenderTexture(g->renderer, g->game_font_texture, NULL, &g->game_frect);
+
+	text_update(g->text);
+	SDL_RenderTexture(g->renderer, g->text->font_texture, NULL, &g->text->frect);
 
 	// 绘制画面
 	SDL_RenderPresent(g->renderer);
@@ -22,7 +24,7 @@ static void game_render(struct game *g)
 bool game_run(struct game *g)
 {
 	Uint64 fps_tick = SDL_GetPerformanceCounter();
-	game_load_texture_SDL(g, "assets/klee.png");
+	load_background(g, "assets/klee.png");
 	srand(time(NULL));
 
 	while (g->running)
@@ -34,6 +36,7 @@ bool game_run(struct game *g)
 
 		printf("\rfps: %.0f", game_get_fps(&fps_tick));
 	}
+	printf("\n");
 	return true;
 }
 

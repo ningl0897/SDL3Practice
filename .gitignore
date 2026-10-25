@@ -10,3 +10,4 @@ arm64-*/
 # 本地 SDL 源码依赖
 /SDL3/
 /SDL3_image/
+/SDL3_ttf/

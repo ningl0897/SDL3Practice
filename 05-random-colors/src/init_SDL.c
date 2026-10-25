@@ -65,7 +65,7 @@ void game_quit_SDL(struct game *g)
 
 	if (g->game_font != NULL)
 	{
-		TTF_ClodeFont(g->game_font);
+		TTF_CloseFont(g->game_font);
 		g->game_font = NULL;
 	}
 
