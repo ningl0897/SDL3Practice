@@ -6,9 +6,3 @@ arm64-*/
 *.bak
 *.kra
 *.env
-
-# 本地 SDL 源码依赖
-/SDL3/
-/SDL3_image/
-/SDL3_ttf/
-/SDL3_mixer/
