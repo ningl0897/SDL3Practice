@@ -1,0 +1,48 @@
+cmake_minimum_required(VERSION 3.16)
+project(demo C)
+
+# ON=用系统装的 SDL3，OFF=用源码编译
+option(USE_SYSTEM_SDL "Use system SDL3" OFF)
+
+if(WIN32)
+    set(CMAKE_PREFIX_PATH "C:/SDL3-3.4.16")
+endif()
+
+if(USE_SYSTEM_SDL)
+  find_package(SDL3 REQUIRED)
+  find_package(SDL3_image REQUIRED)
+  find_package(SDL3_ttf REQUIRED)
+  find_package(SDL3_mixer REQUIRED)
+else()
+  set(SDL_TESTS    OFF CACHE BOOL "" FORCE)
+  set(SDL_EXAMPLES OFF CACHE BOOL "" FORCE)
+  set(SDL_INSTALL  OFF CACHE BOOL "" FORCE)
+  add_subdirectory(../SDL3 SDL)
+  add_subdirectory(../SDL3_image SDL3_image)
+  add_subdirectory(../SDL3_ttf SDL3_ttf)
+  add_subdirectory(../SDL3_mixer SDL3_mixer)
+endif()
+
+file(GLOB DEMO_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
+add_executable(demo WIN32 ${DEMO_SOURCES})
+target_link_libraries(demo PRIVATE SDL3::SDL3 SDL3_image::SDL3_image SDL3_ttf::SDL3_ttf SDL3_mixer::SDL3_mixer)
+
+if(UNIX)
+  target_link_libraries(demo PRIVATE m)
+endif()
+
+if(WIN32)
+  add_custom_command(TARGET demo POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+      $<TARGET_FILE:SDL3::SDL3>
+      $<TARGET_FILE:SDL3_image::SDL3_image>
+      $<TARGET_FILE:SDL3_ttf::SDL3_ttf>
+      $<TARGET_FILE:SDL3_mixer::SDL3_mixer>
+      $<TARGET_FILE_DIR:demo>)
+endif()
+
+add_custom_command(TARGET demo POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/assets
+    ${CMAKE_BINARY_DIR}/assets
+)
