@@ -4,8 +4,6 @@ project(demo C)
 # ON=用系统装的 SDL3，OFF=用源码编译
 option(USE_SYSTEM_SDL "Use system SDL3" OFF)
 
-set(CMAKE_C_FLAGS "-g")
-
 if(WIN32)
     set(CMAKE_PREFIX_PATH "C:/SDL3-3.4.16")
 endif()
