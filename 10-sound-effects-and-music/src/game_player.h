@@ -7,7 +7,7 @@
 
 void player_quit(struct game *g);
 
-bool player_update(struct player *p);
+bool player_update(struct player *p, struct music *m);
 bool player_draw(struct player *p);
 
 #endif

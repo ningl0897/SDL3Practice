@@ -44,18 +44,9 @@ static bool game_init_SDL(struct game *g)
     return false;
   }
 
-  if ((MIX_Init(MIX_FLAGS) & MIX_FLAGS) != MIX_FLAGS)
+  if (!MIX_Init())
   {
     fprintf(stderr, "Error mix init: %s\n", SDL_GetError());
-    return false;
-  }
-  SDL_AudioSpec *spac = {0};
-  spac->format = MIX_DEFAULT_FORMAT;
-  spac->channels = MIX_DEFAULT_CHANNELS;
-  spac->freq = MIX_DEFAULT_FREQUENCY;
-  if (MIX_OpenAudio(&spac, 0) < 0)
-  {
-    fprintf(stderr, "Error open audio: %s\n", SDL_GetError());
     return false;
   }
 
@@ -128,8 +119,6 @@ static void game_quit_SDL(struct game *g)
     g->window = NULL;
   }
 
-  Mix_CloseAudio();
-  Mix_Quit();
   MIX_Quit();
   TTF_Quit();
   SDL_Quit();
@@ -183,28 +172,37 @@ struct game *game_init(void)
 
   if (!game->music)
   {
-    struct music *mus = calloc(1, sizeof(struct music));
-    if (!mus)
+    struct music *music = calloc(1, sizeof(struct music));
+    if (music == NULL)
     {
       fprintf(stderr, "error calloc in game_init()\n");
       game_quit(game);
       return NULL;
     }
-    game->music = mus;
+    game->music = music;
 
-    game->music->bbkb_sound = Mix_LoadWAV("assets/audio/bbkb.mp3");
-    if (game->music->bbkb_sound == NULL)
+    music->mixer = MIX_CreateMixerDevice(SDL_AUDIO_DEVICE_DEFAULT_PLAYBACK, NULL);
+    if (music->mixer == NULL)
     {
-      fprintf(stderr, "Error load sound: %s\n", SDL_GetError());
+      fprintf(stderr, "Error create mixer: %s\n", SDL_GetError());
+      game_quit(game);
       return NULL;
     }
 
-    game->music->bgm = Mix_LoadMUS("assets/audio/bgm_loop.ogg");
-    if (game->music->bgm == NULL)
+    music->sound_track = MIX_CreateTrack(music->mixer);
+    music->bgm_track = MIX_CreateTrack(music->mixer);
+    if (music->sound_track == NULL || music->bgm_track == NULL)
     {
-      fprintf(stderr, "Error load bgm: %s\n", SDL_GetError());
+      fprintf(stderr, "Error create track: %s\n", SDL_GetError());
+      game_quit(game);
       return NULL;
     }
+  
+  music->bbkb_sound = MIX_LoadAudio(music->mixer, "assets/audio/bbkb.mp3", true);
+  music->bgm = MIX_LoadAudio(music->mixer, "assets/audio/bgm_loop.ogg", false);
+
+  MIX_SetTrackAudio(music->sound_track, music->bbkb_sound);
+  MIX_SetTrackAudio(music->bgm_track, music->bgm);
   }
 
   game->running = true;
@@ -216,13 +214,16 @@ void game_quit(struct game *g)
 {
   if (g)
   {
-    Mix_HaltMusic(g->music->bgm);
-    Mix_HaltChannel(-1);
-
-    Mix_FreeChunk(g->music->bbkb_sound);
-    Mix_FreeMusic(g->music->bgm);
-    free(g->music);
-    g->music = NULL;
+    if (g->music)
+    {
+      MIX_DestroyTrack(g->music->sound_track);
+      MIX_DestroyTrack(g->music->bgm_track);
+      MIX_DestroyAudio(g->music->bbkb_sound);
+      MIX_DestroyAudio(g->music->bgm);
+      MIX_DestroyMixer(g->music->mixer);
+      free(g->music);
+      g->music = NULL;
+    }
 
     player_quit(g);
     g->player = NULL;
@@ -265,11 +266,12 @@ bool game_run(struct game *g)
   Uint64 fps_tick = SDL_GetPerformanceCounter();
   srand(time(NULL));
 
-  Mix_PlayMusic(g->music->bgm, -1);
+  MIX_PlayTrack( g->music->bgm_track, 0);
+  MIX_SetTrackLoops( g->music->bgm_track, -1);
   while (g->running)
   {
     game_event_message_SDL(g);
-    player_update(g->player);
+    player_update(g->player, g->music);
     game_render(g);
 
     SDL_Delay(16);

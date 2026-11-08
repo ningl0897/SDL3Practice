@@ -23,26 +23,25 @@ void text_quit(struct game *g)
 
 bool text_update(struct game *g) // 动画在此实现
 {
-    struct text *t=g->text;
-    
-    float r=BUBBLE_RADIUS;
+    struct text *t = g->text;
+
+    float r = BUBBLE_RADIUS;
     if (!t)
     {
         return false;
     }
-    if (t->frect.x < 0|| t->frect.x + t->frect.w >= GAME_SDL_WINDOW_WIDTH)
+    if (t->frect.x < 0 || t->frect.x + t->frect.w >= GAME_SDL_WINDOW_WIDTH)
     {
         t->speed_x = -t->speed_x;
-        MIX_PlayChannel(0, g->music->bbkb_sound, 0);
+        MIX_PlayTrack(g->music->sound_track, 0);
     }
     if (t->frect.y < 0 || t->frect.y + t->frect.h >= GAME_SDL_WINDOW_HEIGHT)
     {
         t->speed_y = -t->speed_y;
-        MIX_PlayChannel(0, g->music->bbkb_sound, 0);
+        MIX_PlayTrack(g->music->sound_track, 0);
     }
     t->frect.x += t->speed_x;
     t->frect.y += t->speed_y;
-    
 
     return true;
 }

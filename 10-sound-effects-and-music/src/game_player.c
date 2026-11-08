@@ -2,7 +2,7 @@
 
 bool player_init(struct game *g)
 {
-return false;
+  return false;
 }
 void player_quit(struct game *g)
 {
@@ -22,7 +22,7 @@ void player_quit(struct game *g)
   }
 }
 
-bool player_update(struct player *p)
+bool player_update(struct player *p, struct music *m)
 {
   if (p == NULL)
   {
@@ -47,16 +47,29 @@ bool player_update(struct player *p)
     p->frect.x -= PLAYER_SPEED;
   }
 
-  if (p->frect.x -BUBBLE_RADIUS< 0)
-    p->frect.x = 0+BUBBLE_RADIUS;
-  if ((p->frect.x + p->frect.w+BUBBLE_RADIUS) > GAME_SDL_WINDOW_WIDTH)
-    p->frect.x = GAME_SDL_WINDOW_WIDTH - p->frect.w-BUBBLE_RADIUS;
+  if (p->frect.x - BUBBLE_RADIUS < 0)
+  {
+    p->frect.x = 0 + BUBBLE_RADIUS;
+    // MIX_PlayTrack(m->sound_track, 0);
+  }
 
-  if (p->frect.y-BUBBLE_RADIUS < 0)
-    p->frect.y = 0+BUBBLE_RADIUS;
-  if ((p->frect.y + p->frect.h+BUBBLE_RADIUS) > GAME_SDL_WINDOW_HEIGHT)
-    p->frect.y = GAME_SDL_WINDOW_HEIGHT - p->frect.h-BUBBLE_RADIUS;
+  if ((p->frect.x + p->frect.w + BUBBLE_RADIUS) > GAME_SDL_WINDOW_WIDTH)
+  {
+    p->frect.x = GAME_SDL_WINDOW_WIDTH - p->frect.w - BUBBLE_RADIUS;
+    // MIX_PlayTrack(m->sound_track, 0);
+  }
 
+  if (p->frect.y - BUBBLE_RADIUS < 0)
+  {
+    p->frect.y = 0 + BUBBLE_RADIUS;
+    // MIX_PlayTrack(m->sound_track, 0);
+  }
+  if ((p->frect.y + p->frect.h + BUBBLE_RADIUS) > GAME_SDL_WINDOW_HEIGHT)
+  {
+    p->frect.y = GAME_SDL_WINDOW_HEIGHT - p->frect.h - BUBBLE_RADIUS;
+    // MIX_PlayTrack(m->sound_track, 0);
+  }
+  // 这里不行，太鬼畜了，这里是每帧检查位置，如果位置不对，就会一直播放音效
   return true;
 }
 

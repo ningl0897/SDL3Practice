@@ -16,17 +16,17 @@
 #define GAME_SDL_WINDOW_HEIGHT (480)
 #define GAME_SDL_INIT_FLAGS (SDL_INIT_VIDEO)
 #define GAME_SDL_WIN_DEFAULT_FLAGS (SDL_WINDOW_TRANSPARENT)
-#define MIX_FLAGS (MIX_INIT_MP3 | MIX_INIT_OGG)
 
 #define TEXT_SIZE 60.0f
 #define TEXT_COLOR \
-	(SDL_Color) { 255, 255, 255, 255, }
+  (SDL_Color) { 255, 255, 255, 255, }
 #define TEXT_OUTER_COLOR \
-	(SDL_Color) { 173, 216, 230, 255, }
+  (SDL_Color) { 173, 216, 230, 255, }
 #define TEXT_STR "Klee!"
 #define BUBBLE_RADIUS 10
 
-struct game {
+struct game
+{
   SDL_Window *window;
   SDL_Renderer *renderer;
   SDL_Texture *background;
@@ -38,19 +38,20 @@ struct game {
   struct player *player;
   struct bubble *bubble;
   struct music *music;
-  
 };
 
-struct text {
-  TTF_Font *font; // 字体句柄
-  SDL_Texture *texture; // 文字纹理
-  SDL_FRect frect; // 位置与大小
+struct text
+{
+  TTF_Font *font;         // 字体句柄
+  SDL_Texture *texture;   // 文字纹理
+  SDL_FRect frect;        // 位置与大小
   SDL_Renderer *renderer; // 指向渲染器（不持有）
   float speed_x;
   float speed_y;
 };
 
-struct player {
+struct player
+{
   SDL_Renderer *renderer;
   SDL_Texture *texture;
   SDL_FRect frect;
@@ -58,15 +59,17 @@ struct player {
 
 struct bubble
 {
-    SDL_Texture *player_tex;
-    SDL_Texture *text_tex;
+  SDL_Texture *player_tex;
+  SDL_Texture *text_tex;
 };
 
 struct music
 {
-  Mix_Chunk *bbkb_sound;
-  Mix_Music *bgm;
+  MIX_Mixer *mixer;
+  MIX_Audio *bbkb_sound;
+  MIX_Audio *bgm;
+  MIX_Track *sound_track;
+  MIX_Track *bgm_track;
 };
-
 
 #endif

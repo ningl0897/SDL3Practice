@@ -14,7 +14,7 @@ void game_event_message_SDL(struct game *g)
 			switch (game_event.key.key)
 			{
 			case SDLK_SPACE:
-				Mix_PlayChannel(0, g->music->bbkb_sound, 0);
+				MIX_PlayTrack(g->music->sound_track, 0);
 				g->r = rand() % 50;
 				g->g = rand() % 50;
 				g->b = rand() % 50;
@@ -23,10 +23,10 @@ void game_event_message_SDL(struct game *g)
 				g->running = false;
 				break;
 			case SDLK_M:
-				if(MIX_PauseMusic(g->music->bgm) == 0)
-					Mix_ResumeMusic(g->music->bgm);
+				if(MIX_TrackPaused(g->music->bgm_track))
+					MIX_ResumeTrack(g->music->bgm_track);
 				else
-					Mix_PauseMusic(g->music->bgm);
+					MIX_PauseTrack(g->music->bgm_track);
 				break;
 			default:
 				break;
